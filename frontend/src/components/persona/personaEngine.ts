@@ -21,7 +21,7 @@ export const PERSONA_META: Record<PersonaId, { name: string; color: string; eyes
 const ORDER: PersonaId[] = ['core', 'finance', 'code', 'security', 'research', 'general']
 
 export interface PersonaEngine {
-  setPersona(id: PersonaId): void
+  setPersona(id: PersonaId, instant?: boolean): void
   setState(s: PersonaState): void
   setFollow(on: boolean): void
   nod(): void
@@ -192,7 +192,11 @@ export function createPersonaEngine(
   canvas.addEventListener('pointerdown', onDown); canvas.addEventListener('pointermove', onDrag); canvas.addEventListener('pointerup', onUp); canvas.addEventListener('pointercancel', onUp); canvas.addEventListener('dblclick', resetView)
 
   let morphT = 1
-  const setPersona = (id: PersonaId) => { const i = ORDER.indexOf(id); if (i < 0 || i === cur) return; cur = i; morphT = 0; target.set(PERSONA_META[id].color) }
+  const setPersona = (id: PersonaId, instant = false) => {
+    const i = ORDER.indexOf(id); if (i < 0 || i === cur) return
+    cur = i; target.set(PERSONA_META[id].color)
+    if (instant) { morphT = 1; colNow.copy(target); for (let k = 0; k < accW.length; k++) accW[k] = k === cur ? 1 : 0 } else morphT = 0
+  }
 
   // pause when off-screen
   let visible = true

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 import uuid
 from datetime import datetime
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Literal
 
 class ExecutionBase(BaseModel):
     input_text: str = Field(min_length=1, max_length=12000)
@@ -12,7 +12,7 @@ class ExecutionCreate(ExecutionBase):
     provider: Optional[str] = None
     model: Optional[str] = None
     allow_fallback: Optional[bool] = None
-    routing_mode: Optional[str] = None
+    routing_mode: Optional[Literal["automatic", "explicit"]] = None
 
 class ExecutionResponse(ExecutionBase):
     model_config = ConfigDict(from_attributes=True)
