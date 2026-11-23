@@ -48,6 +48,26 @@ class Settings(BaseSettings):
     OPENAI_COMPATIBLE_API_KEY: str = ""
     OPENAI_COMPATIBLE_BASE_URL: str = ""
     EXA_API_KEY: str = ""
+
+    # ── Account email (Brevo HTTP API; Render's free plan blocks SMTP) ──
+    BREVO_API_KEY: str = ""
+    MAIL_FROM_EMAIL: str = ""          # a sender address verified in Brevo
+    MAIL_FROM_NAME: str = "GRID07"
+    FRONTEND_URL: str = "http://localhost:3000"
+    # unset = required whenever email sending is configured
+    REQUIRE_EMAIL_VERIFICATION: bool | None = None
+    # look up the domain's mail servers at sign-up (turn off only for offline tests)
+    CHECK_EMAIL_DNS: bool = True
+
+    @property
+    def email_enabled(self) -> bool:
+        return bool(self.BREVO_API_KEY and self.MAIL_FROM_EMAIL)
+
+    @property
+    def verification_required(self) -> bool:
+        if self.REQUIRE_EMAIL_VERIFICATION is not None:
+            return self.REQUIRE_EMAIL_VERIFICATION
+        return self.email_enabled
     TAVILY_API_KEY: str = ""
 
     GROQ_MODELS: str = "openai/gpt-oss-20b,qwen/qwen3.8-27b,openai/gpt-oss-120b,llama-3.1-8b-instant,llama-3.3-70b-versatile"

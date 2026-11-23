@@ -1,9 +1,9 @@
 from sqlalchemy import inspect, text
 
 from app.core.db import engine
-from migrations import v001_provider_observability, v002_expert_routing_and_free_models, v003_user_credentials
+from migrations import v001_provider_observability, v002_expert_routing_and_free_models, v003_user_credentials, v004_email_verification
 
-MIGRATIONS = [v001_provider_observability, v002_expert_routing_and_free_models, v003_user_credentials]
+MIGRATIONS = [v001_provider_observability, v002_expert_routing_and_free_models, v003_user_credentials, v004_email_verification]
 
 
 

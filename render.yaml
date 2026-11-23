@@ -24,3 +24,11 @@ services:
         sync: false
       - key: TAVILY_API_KEY
         sync: false
+      # sign-up confirmation emails (Brevo, free 300/day). When both are set,
+      # new users must confirm their email before they can sign in.
+      - key: BREVO_API_KEY
+        sync: false
+      - key: MAIL_FROM_EMAIL
+        sync: false # a sender address you verified in Brevo
+      - key: FRONTEND_URL
+        sync: false # e.g. https://grid07.vercel.app (used in the email link)
