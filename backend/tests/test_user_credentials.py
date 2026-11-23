@@ -139,16 +139,16 @@ async def test_user_credential_api_flow(api_context, monkeypatch):
     client = api_context["client"]
 
     # Register and login two separate users to verify isolation
-    reg_a = await client.post("/api/v1/auth/register", json={"email": "user_a@test.com", "password": "Password123!"})
+    reg_a = await client.post("/api/v1/auth/register", json={"email": "user_a@grid07-tests.dev", "password": "orbit-lantern-maple-73"})
     assert reg_a.status_code == 200
-    login_a = await client.post("/api/v1/auth/login", data={"username": "user_a@test.com", "password": "Password123!"})
+    login_a = await client.post("/api/v1/auth/login", data={"username": "user_a@grid07-tests.dev", "password": "orbit-lantern-maple-73"})
     assert login_a.status_code == 200
     token_a = login_a.json()["access_token"]
     headers_a = {"Authorization": f"Bearer {token_a}"}
 
-    reg_b = await client.post("/api/v1/auth/register", json={"email": "user_b@test.com", "password": "Password123!"})
+    reg_b = await client.post("/api/v1/auth/register", json={"email": "user_b@grid07-tests.dev", "password": "orbit-lantern-maple-73"})
     assert reg_b.status_code == 200
-    login_b = await client.post("/api/v1/auth/login", data={"username": "user_b@test.com", "password": "Password123!"})
+    login_b = await client.post("/api/v1/auth/login", data={"username": "user_b@grid07-tests.dev", "password": "orbit-lantern-maple-73"})
     assert login_b.status_code == 200
     token_b = login_b.json()["access_token"]
     headers_b = {"Authorization": f"Bearer {token_b}"}

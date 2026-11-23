@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [needsConfirm, setNeedsConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -22,18 +23,28 @@ export default function RegisterPage() {
     setError('')
     setLoading(true)
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+      setError('Please enter a valid email address.')
+      setLoading(false)
+      return
+    }
+    if (password.length < 10) {
+      setError('Password must be at least 10 characters long.')
       setLoading(false)
       return
     }
 
     try {
-      await api.post('/auth/register', { email: email.trim(), password })
+      const res = await api.post('/auth/register', { email: email.trim(), password })
       setSuccess(true)
-      setTimeout(() => {
-        router.push('/login')
-      }, 1500)
+      if (res.data?.email_verified === false) {
+        // stay here and tell them to check their inbox
+        setNeedsConfirm(true)
+      } else {
+        setTimeout(() => {
+          router.push('/login')
+        }, 1500)
+      }
     } catch (err: unknown) {
       setError(getApiErrorMessage(err, 'Failed to create your account. Please try again.'))
       setLoading(false)
@@ -51,11 +62,23 @@ export default function RegisterPage() {
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <h3 className="text-base font-semibold text-[#F2EFE8]">
-            Account Created Successfully!
+            {needsConfirm ? 'Check your inbox' : 'Account Created Successfully!'}
           </h3>
-          <p className="text-xs text-[#A8A398]">
-            Redirecting to sign-in terminal...
-          </p>
+          {needsConfirm ? (
+            <p className="text-xs text-[#A8A398] leading-relaxed max-w-xs mx-auto">
+              We sent a confirmation link to <span className="text-[#F2EFE8] font-medium">{email.trim()}</span>.
+              Open it to activate your account, then sign in. Check spam if it doesn&apos;t arrive in a minute.
+            </p>
+          ) : (
+            <p className="text-xs text-[#A8A398]">
+              Redirecting to sign-in terminal...
+            </p>
+          )}
+          {needsConfirm && (
+            <Link href="/login" className="inline-block text-xs font-semibold text-[#D8BC88] hover:underline pt-1">
+              Go to sign in
+            </Link>
+          )}
         </div>
       ) : (
         <form className="space-y-5" onSubmit={handleSubmit} noValidate>
@@ -133,7 +156,7 @@ export default function RegisterPage() {
               </button>
             </div>
             <p className="text-[11px] text-[#8C867B] mt-1.5">
-              Include letters, numbers, and symbols for high security.
+              At least 10 characters. Common patterns like &quot;Qwerty@123&quot; are rejected; a few unrelated words work well.
             </p>
           </div>
 
