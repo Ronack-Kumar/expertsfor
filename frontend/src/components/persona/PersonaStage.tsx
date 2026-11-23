@@ -62,12 +62,17 @@ export default function PersonaStage({ persona, state, nodSignal = 0, className 
   const engineRef = useRef<PersonaEngine | null>(null)
   const [follow, setFollow] = useState(true)
   const [failed, setFailed] = useState(false)
+  // latest props, so the engine starts on the right persona/state once its async import finishes
+  const personaRef = useRef(persona)
+  const stateRef = useRef(state)
 
   // mount the WebGL engine on the client only
   useEffect(() => {
     let cancelled = false
     let saved = true
     try { saved = localStorage.getItem(FOLLOW_KEY) !== '0' } catch { /* storage unavailable */ }
+    // localStorage only exists in the browser, so the saved choice is applied after hydration
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFollow(saved)
     ;(async () => {
       if (!canvasRef.current || !wrapRef.current) return
@@ -77,6 +82,8 @@ export default function PersonaStage({ persona, state, nodSignal = 0, className 
         const eng = createPersonaEngine(canvasRef.current, wrapRef.current, { headUrl: '/assets/persona/head.json', quality })
         engineRef.current = eng
         eng.setFollow(saved)
+        eng.setPersona(personaRef.current, true)
+        eng.setState(stateRef.current)
       } catch {
         setFailed(true)
       }
@@ -84,8 +91,8 @@ export default function PersonaStage({ persona, state, nodSignal = 0, className 
     return () => { cancelled = true; engineRef.current?.dispose(); engineRef.current = null }
   }, [quality])
 
-  useEffect(() => { engineRef.current?.setPersona(persona) }, [persona])
-  useEffect(() => { engineRef.current?.setState(state) }, [state])
+  useEffect(() => { personaRef.current = persona; engineRef.current?.setPersona(persona) }, [persona])
+  useEffect(() => { stateRef.current = state; engineRef.current?.setState(state) }, [state])
   useEffect(() => { if (nodSignal) engineRef.current?.nod() }, [nodSignal])
 
   const toggleFollow = () => {

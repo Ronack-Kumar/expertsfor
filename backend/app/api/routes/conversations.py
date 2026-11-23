@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.api import deps
-from app.models import Workspace, Conversation, Message
+from app.models import Workspace, Conversation, Message, Agent
 from app.schemas.memory import ConversationCreate, ConversationResponse, MessageCreate, MessageResponse
 
 router = APIRouter()
@@ -32,6 +32,12 @@ async def create_conversation(
     db: AsyncSession = Depends(deps.get_db),
     workspace: Workspace = Depends(deps.get_current_workspace)
 ) -> Any:
+    if conv_in.agent_id:
+        agent = await db.execute(
+            select(Agent).where(Agent.id == conv_in.agent_id, Agent.workspace_id == workspace_id)
+        )
+        if not agent.scalars().first():
+            raise HTTPException(status_code=404, detail="Agent not found")
     conv = Conversation(
         workspace_id=workspace_id,
         agent_id=conv_in.agent_id,
@@ -73,6 +79,15 @@ async def add_message(
     db: AsyncSession = Depends(deps.get_db),
     workspace: Workspace = Depends(deps.get_current_workspace)
 ) -> Any:
+    # the conversation must belong to this workspace, or any member of one
+    # workspace could write into another workspace's conversations
+    owned = await db.execute(
+        select(Conversation.id)
+        .where(Conversation.id == conv_id)
+        .where(Conversation.workspace_id == workspace_id)
+    )
+    if owned.scalar_one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
     msg = Message(
         conversation_id=conv_id,
         role=msg_in.role,
