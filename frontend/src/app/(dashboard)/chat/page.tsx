@@ -375,6 +375,11 @@ function AutoChatPageContent() {
 
   const [activeTab, setActiveTab] = useState<'routing' | 'details' | 'sources'>('routing')
   const [rightPanelOpen, setRightPanelOpen] = useState(true)
+  // On phones/tablets the panel would squeeze the chat, so it starts closed there
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.innerWidth < 1024) setRightPanelOpen(false)
+  }, [])
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [latestExecution, setLatestExecution] = useState<Execution | null>(null)
   const [activeExpert, setActiveExpert] = useState<ExpertCardData>(EXPERT_CARDS[0])
@@ -884,6 +889,14 @@ function AutoChatPageContent() {
           {/* Right Action Icons */}
           <div className="flex items-center gap-3 relative">
             <button
+              onClick={() => setRightPanelOpen((o) => !o)}
+              className="lg:hidden p-1.5 text-[#6B655B] hover:text-[#1A1A1E] hover:bg-black/5 rounded-full transition-colors"
+              title="Show AI persona and routing"
+              aria-label="Toggle AI persona panel"
+            >
+              <Sliders className="w-4 h-4" />
+            </button>
+            <button
               onClick={toggleTheme}
               data-testid="theme-toggle"
               className="p-1.5 text-[#6B655B] hover:text-[#1A1A1E] hover:bg-black/5 rounded-full transition-colors"
@@ -1235,7 +1248,7 @@ function AutoChatPageContent() {
 
                         <div className="flex items-center gap-2">
                           {exchange.modelName && !exchange.isLoading && (
-                            <span className="text-[11px] font-medium text-[#736E64] bg-[#F5F2EB] px-2.5 py-1 rounded-md border border-[#EBE7DE]">
+                            <span className="hidden sm:inline text-[11px] font-medium text-[#736E64] bg-[#F5F2EB] px-2.5 py-1 rounded-md border border-[#EBE7DE]">
                               Using {exchange.modelName}
                             </span>
                           )}
@@ -1612,7 +1625,7 @@ function AutoChatPageContent() {
 
       {/* Right-Side Intelligence Panel */}
       {rightPanelOpen && (
-        <aside className="w-[340px] xl:w-[360px] shrink-0 border-l border-[#E6E1D4] dark:border-[#38352D] bg-[#FFFFFF] dark:bg-[#1D1C19] flex flex-col h-screen overflow-hidden shadow-2xs z-20">
+        <aside className="fixed inset-y-0 right-0 max-w-full lg:static w-[340px] xl:w-[360px] shrink-0 border-l border-[#E6E1D4] dark:border-[#38352D] bg-[#FFFFFF] dark:bg-[#1D1C19] flex flex-col h-screen overflow-hidden shadow-xl lg:shadow-2xs z-40 lg:z-20">
           {/* Live 3D persona: the router (Core) hands off to the expert who answers */}
           <div className="p-3 pb-0 shrink-0">
             <PersonaStage persona={stagePersona} state={stageState} nodSignal={nodSignal} className="h-[260px] xl:h-[280px] w-full" />
