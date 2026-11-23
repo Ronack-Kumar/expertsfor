@@ -66,3 +66,20 @@ def mask_credential(raw_key: str) -> dict:
         masked = "••••••••"
     return {"prefix": prefix, "suffix": suffix, "masked": masked}
 
+
+
+def create_purpose_token(subject: str, purpose: str, expires_delta: timedelta) -> str:
+    """Single-purpose signed token (e.g. email verification). Never valid for API access."""
+    to_encode = {"exp": datetime.now(timezone.utc) + expires_delta, "sub": str(subject), "purpose": purpose}
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+
+
+def read_purpose_token(token: str, purpose: str) -> str | None:
+    """Return the subject if the token is valid, unexpired and for this purpose."""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.InvalidTokenError:
+        return None
+    if payload.get("purpose") != purpose:
+        return None
+    return payload.get("sub")

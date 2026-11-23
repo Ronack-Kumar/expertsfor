@@ -85,6 +85,15 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   },
 ]
 
+// Follow-up suggestions that fit the expert who answered
+const FOLLOW_UPS: Record<string, string[]> = {
+  finance: ['Show historical data', 'Compare with other sectors', 'What are safer alternatives?', 'Summarize key points'],
+  code: ['Show a complete example', 'How would I test this?', 'What are common pitfalls?', 'Summarize key points'],
+  security: ['How do I test for this?', 'Show a secure code example', 'What else should I check?', 'Summarize key points'],
+  research: ['Cite more sources', 'What are the counterarguments?', 'Explain it more simply', 'Summarize key points'],
+  general: ['Explain it more simply', 'Give me an example', 'What should I do next?', 'Summarize key points'],
+}
+
 const EXPERT_CARDS: ExpertCardData[] = [
   {
     id: 'finance',
@@ -366,6 +375,11 @@ function AutoChatPageContent() {
 
   const [activeTab, setActiveTab] = useState<'routing' | 'details' | 'sources'>('routing')
   const [rightPanelOpen, setRightPanelOpen] = useState(true)
+  // On phones/tablets the panel would squeeze the chat, so it starts closed there
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.innerWidth < 1024) setRightPanelOpen(false)
+  }, [])
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [latestExecution, setLatestExecution] = useState<Execution | null>(null)
   const [activeExpert, setActiveExpert] = useState<ExpertCardData>(EXPERT_CARDS[0])
@@ -441,6 +455,8 @@ function AutoChatPageContent() {
 
   // Cancellation and race-condition tracking
   const abortControllerRef = useRef<AbortController | null>(null)
+  // Conversation created by this page during a send; its URL change must not reload history mid-answer
+  const selfCreatedConvRef = useRef<string | null>(null)
   const currentRequestIdRef = useRef<number>(0)
 
   // Sync theme attribute to document
@@ -546,9 +562,18 @@ function AutoChatPageContent() {
     let isCancelled = false
 
     const loadConversation = async () => {
+      if (selfCreatedConvRef.current && selfCreatedConvRef.current !== paramConvId) {
+        selfCreatedConvRef.current = null
+      }
       if (!paramConvId) {
         setConversationId(null)
         setExchanges([])
+        return
+      }
+
+      if (selfCreatedConvRef.current === paramConvId) {
+        // We just created this conversation and are streaming its first answer; keep live state
+        setConversationId(paramConvId)
         return
       }
 
@@ -665,6 +690,7 @@ function AutoChatPageContent() {
           { signal: controller.signal }
         )
         convId = convRes.data.id
+        selfCreatedConvRef.current = convId
         setConversationId(convId)
         if (typeof window !== 'undefined') {
           window.history.replaceState(null, '', `/chat?conversationId=${convId}`)
@@ -833,7 +859,8 @@ function AutoChatPageContent() {
     <div className="flex h-screen w-full bg-[#FAF8F5] overflow-hidden select-none font-sans text-[#1A1A1E]">
       {/* Central Main Workspace */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        {/* Subtle Top-Right Interior Background Image */}
+        {/* Subtle Top-Right Interior Background Image (welcome screen only, so it never sits behind messages) */}
+        {exchanges.length === 0 && (
         <div
           className="absolute right-0 top-0 w-[58%] h-[270px] pointer-events-none z-0 opacity-80 mix-blend-multiply overflow-hidden chat-hero-bg"
           style={{
@@ -849,6 +876,7 @@ function AutoChatPageContent() {
             className="object-cover object-right-top"
           />
         </div>
+        )}
 
         {/* Workspace Top Header Bar */}
         <header className="h-14 px-8 flex items-center justify-between border-b border-[#EAE5DA] bg-[#FAF8F5]/80 backdrop-blur-sm z-10 shrink-0">
@@ -860,6 +888,14 @@ function AutoChatPageContent() {
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-3 relative">
+            <button
+              onClick={() => setRightPanelOpen((o) => !o)}
+              className="lg:hidden p-1.5 text-[#6B655B] hover:text-[#1A1A1E] hover:bg-black/5 rounded-full transition-colors"
+              title="Show AI persona and routing"
+              aria-label="Toggle AI persona panel"
+            >
+              <Sliders className="w-4 h-4" />
+            </button>
             <button
               onClick={toggleTheme}
               data-testid="theme-toggle"
@@ -1212,7 +1248,7 @@ function AutoChatPageContent() {
 
                         <div className="flex items-center gap-2">
                           {exchange.modelName && !exchange.isLoading && (
-                            <span className="text-[11px] font-medium text-[#736E64] bg-[#F5F2EB] px-2.5 py-1 rounded-md border border-[#EBE7DE]">
+                            <span className="hidden sm:inline text-[11px] font-medium text-[#736E64] bg-[#F5F2EB] px-2.5 py-1 rounded-md border border-[#EBE7DE]">
                               Using {exchange.modelName}
                             </span>
                           )}
@@ -1423,12 +1459,7 @@ function AutoChatPageContent() {
                     {/* Follow-up Action Chips on Latest Turn */}
                     {isLatest && !exchange.isLoading && (
                       <div className="flex flex-wrap items-center gap-2 pt-1 pb-2">
-                        {[
-                          'Show historical data',
-                          'Compare with other sectors',
-                          'What are safe alternatives?',
-                          'Summarize key points',
-                        ].map((chip, chipIdx) => (
+                        {(FOLLOW_UPS[exchange.expert.id] || FOLLOW_UPS.general).map((chip, chipIdx) => (
                           <button
                             key={chipIdx}
                             onClick={() => handleSendQuery(`${chip} regarding ${exchange.userQuery}`)}
@@ -1594,7 +1625,7 @@ function AutoChatPageContent() {
 
       {/* Right-Side Intelligence Panel */}
       {rightPanelOpen && (
-        <aside className="w-[340px] xl:w-[360px] shrink-0 border-l border-[#E6E1D4] dark:border-[#38352D] bg-[#FFFFFF] dark:bg-[#1D1C19] flex flex-col h-screen overflow-hidden shadow-2xs z-20">
+        <aside className="fixed inset-y-0 right-0 max-w-full lg:static w-[340px] xl:w-[360px] shrink-0 border-l border-[#E6E1D4] dark:border-[#38352D] bg-[#FFFFFF] dark:bg-[#1D1C19] flex flex-col h-screen overflow-hidden shadow-xl lg:shadow-2xs z-40 lg:z-20">
           {/* Live 3D persona: the router (Core) hands off to the expert who answers */}
           <div className="p-3 pb-0 shrink-0">
             <PersonaStage persona={stagePersona} state={stageState} nodSignal={nodSignal} className="h-[260px] xl:h-[280px] w-full" />

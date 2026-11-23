@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Loader2, Lock, Mail, ArrowRight } from 'lucide-react'
+import axios from 'axios'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/lib/store'
 import { getApiErrorMessage } from '@/lib/errors'
@@ -20,9 +21,24 @@ export default function LoginPage() {
   const setToken = useAuthStore((state) => state.setToken)
   const setUser = useAuthStore((state) => state.setUser)
 
+  const [unverified, setUnverified] = useState(false)
+  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent'>('idle')
+
+  const handleResend = async () => {
+    setResendState('sending')
+    try {
+      await api.post('/auth/resend-verification', { email: email.trim() })
+    } catch {
+      /* the reply is the same either way */
+    }
+    setResendState('sent')
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setUnverified(false)
+    setResendState('idle')
     setLoading(true)
 
     try {
@@ -45,6 +61,7 @@ export default function LoginPage() {
 
       router.push('/dashboard')
     } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 403) setUnverified(true)
       setError(getApiErrorMessage(err, 'Invalid email or password. Please try again.'))
     } finally {
       setLoading(false)
@@ -64,7 +81,22 @@ export default function LoginPage() {
             className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-medium leading-relaxed flex items-start gap-2.5 animate-auth-reveal"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0 mt-1.5" />
-            <span>{error}</span>
+            <span>
+              {error}
+              {unverified && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resendState !== 'idle'}
+                    className="underline font-semibold text-[#F2EFE8] disabled:no-underline disabled:opacity-80"
+                  >
+                    {resendState === 'sent' ? 'Sent. Check your inbox.' : resendState === 'sending' ? 'Sending…' : 'Resend the link'}
+                  </button>
+                </>
+              )}
+            </span>
           </div>
         )}
 

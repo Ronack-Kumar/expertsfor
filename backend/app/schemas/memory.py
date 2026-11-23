@@ -1,14 +1,17 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 class MessageBase(BaseModel):
     role: str
     content: str
 
-class MessageCreate(MessageBase):
-    pass
+class MessageCreate(BaseModel):
+    # clients may only add their own or agent turns; never system prompts
+    role: Literal["user", "agent"]
+    content: str = Field(min_length=1, max_length=12000)
+
 
 class MessageResponse(MessageBase):
     model_config = ConfigDict(from_attributes=True)

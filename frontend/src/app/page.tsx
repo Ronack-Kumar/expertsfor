@@ -30,19 +30,19 @@ export default function LandingPage() {
         </Link>
         <nav className="flex gap-6 sm:gap-8 items-center">
           <Link
-            className="text-sm font-semibold text-[#666055] hover:text-[#1A1A1E] transition-colors"
+            className="hidden sm:inline text-sm font-semibold text-[#666055] hover:text-[#1A1A1E] transition-colors"
             href="#features"
           >
             Architecture
           </Link>
           <Link
-            className="text-sm font-semibold text-[#666055] hover:text-[#1A1A1E] transition-colors"
+            className="hidden sm:inline text-sm font-semibold text-[#666055] hover:text-[#1A1A1E] transition-colors"
             href="#security"
           >
             Security
           </Link>
           <Link
-            className="text-xs sm:text-sm font-semibold bg-[#1A1A1E] hover:bg-black text-white px-5 py-2.5 rounded-xl transition-all shadow-xs"
+            className="whitespace-nowrap text-xs sm:text-sm font-semibold bg-[#1A1A1E] hover:bg-black text-white px-5 py-2.5 rounded-xl transition-all shadow-xs"
             href="/chat"
           >
             Launch Interface
