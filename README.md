@@ -167,6 +167,10 @@ npm run build
 
 ---
 
+## Credits
+
+- The 3D persona head is built from the Lee Perry-Smith head scan by Infinite-Realities, licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/).
+
 ## Constraints Confirmation
 
 - **Zero Hidden Paid Fallbacks**: Automatic mode strictly operates across eligible free-tier models.
