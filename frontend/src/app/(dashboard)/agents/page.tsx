@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { PersonaBadge, PERSONA_COLORS, type PersonaId } from '@/components/persona/PersonaStage'
 import {
   Loader2,
   Play,
@@ -19,24 +19,14 @@ import { getApiErrorMessage } from '@/lib/errors'
 import { useAuthStore } from '@/lib/store'
 import type { Agent } from '@/lib/types'
 
-const PERSONA_PORTRAIT_MAP: Record<string, string> = {
-  'finance advisor': '/assets/portrait_finance.jpg',
-  'code engineer': '/assets/portrait_code.jpg',
-  'security specialist': '/assets/portrait_security.jpg',
-  'research assistant': '/assets/portrait_research.jpg',
-  'general assistant': '/assets/portrait_analyst.jpg',
-}
-
-const getPortraitForAgent = (agentName: string): string => {
+const personaForAgent = (agentName: string): PersonaId => {
   const lower = agentName.toLowerCase().trim()
-  for (const [key, path] of Object.entries(PERSONA_PORTRAIT_MAP)) {
-    if (lower.includes(key)) return path
-  }
-  if (lower.includes('finance') || lower.includes('invest')) return '/assets/portrait_finance.jpg'
-  if (lower.includes('code') || lower.includes('dev') || lower.includes('python')) return '/assets/portrait_code.jpg'
-  if (lower.includes('sec') || lower.includes('cyber') || lower.includes('vuln')) return '/assets/portrait_security.jpg'
-  if (lower.includes('research') || lower.includes('scien')) return '/assets/portrait_research.jpg'
-  return '/assets/portrait_analyst.jpg'
+  if (lower.includes('finance') || lower.includes('invest') || lower.includes('advisor')) return 'finance'
+  if (lower.includes('code') || lower.includes('engineer') || lower.includes('dev') || lower.includes('python')) return 'code'
+  if (lower.includes('sec') || lower.includes('cyber') || lower.includes('vuln')) return 'security'
+  if (lower.includes('research') || lower.includes('scien')) return 'research'
+  if (lower.includes('general') || lower.includes('assistant')) return 'general'
+  return 'core'
 }
 
 export default function AgentsPage() {
@@ -181,7 +171,7 @@ export default function AgentsPage() {
       ) : (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filteredAgents.map((agent) => {
-            const portrait = getPortraitForAgent(agent.name)
+            const persona = personaForAgent(agent.name)
             return (
               <article
                 key={agent.id}
@@ -189,14 +179,10 @@ export default function AgentsPage() {
               >
                 {/* Portrait Header */}
                 <div className="h-40 relative overflow-hidden bg-[#0F0F13]">
-                  <Image
-                    src={portrait}
-                    alt={agent.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F13] via-[#0F0F13]/40 to-transparent" />
+                  <div className="absolute inset-0 opacity-80 transition-opacity duration-500 group-hover:opacity-100" style={{ background: `radial-gradient(70% 90% at 50% 25%, ${PERSONA_COLORS[persona]}45, transparent 70%)` }} />
+                  <div className="absolute left-1/2 top-5 -translate-x-1/2 transition-transform duration-500 group-hover:scale-110">
+                    <PersonaBadge persona={persona} size={64} />
+                  </div>
 
                   {/* Status badge */}
                   <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-[#0F0F13]/85 backdrop-blur-md border border-white/10 text-[10px] font-semibold text-[#10B981] flex items-center gap-1 shadow-2xs">
