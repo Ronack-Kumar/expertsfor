@@ -35,6 +35,7 @@ import { api } from '@/lib/api'
 import { getApiErrorMessage } from '@/lib/errors'
 import { MarkdownContent } from '@/components/MarkdownContent'
 import { TechDividendChart } from '@/components/TechDividendChart'
+import PersonaStage, { PersonaBadge, PERSONA_COLORS, personaFromExpertId, type PersonaState } from '@/components/persona/PersonaStage'
 import type { Execution, RoutingDecision, Agent, Conversation, Message } from '@/lib/types'
 
 interface ExpertCardData {
@@ -411,6 +412,32 @@ function AutoChatPageContent() {
   // Active chat exchanges (all questions and answers preserved in order)
   const [exchanges, setExchanges] = useState<ChatExchange[]>([])
   const latestExchange = exchanges[exchanges.length - 1]
+
+  // ---- 3D persona: who is on stage and what they are doing ----
+  const [inputFocused, setInputFocused] = useState(false)
+  const [speakingUntil, setSpeakingUntil] = useState(0)
+  const [nodSignal, setNodSignal] = useState(0)
+  const wasLoadingRef = useRef(false)
+  useEffect(() => {
+    const loading = !!latestExchange?.isLoading
+    if (wasLoadingRef.current && !loading && latestExchange && !latestExchange.error) {
+      const until = Date.now() + 3500
+      setSpeakingUntil(until)
+      const t = setTimeout(() => setSpeakingUntil(0), 3500)
+      wasLoadingRef.current = loading
+      return () => clearTimeout(t)
+    }
+    wasLoadingRef.current = loading
+  }, [latestExchange])
+  const routingInProgress = !!latestExchange?.isLoading && ['receiving', 'analyzing', 'routing'].includes(thinkingStage)
+  const stagePersona = !latestExchange || routingInProgress ? 'core' : personaFromExpertId(latestExchange.expert.id)
+  const stageState: PersonaState = latestExchange?.isLoading
+    ? 'thinking'
+    : speakingUntil > 0
+      ? 'speaking'
+      : inputFocused
+        ? 'listening'
+        : 'idle'
 
   // Cancellation and race-condition tracking
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -988,14 +1015,14 @@ function AutoChatPageContent() {
                           : 'border-[#E4DFD3] hover:border-[#B89355]/60 hover:shadow-xs'
                       }`}
                     >
-                      <Image
-                        src={card.image}
-                        alt={card.title}
-                        fill
-                        sizes="(max-width: 768px) 50vw, 25vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      <div className="absolute inset-0 bg-[#05060a]" />
+                      <div
+                        className="absolute inset-0 opacity-70 transition-opacity duration-500 group-hover:opacity-100"
+                        style={{ background: `radial-gradient(70% 80% at 50% 20%, ${PERSONA_COLORS[personaFromExpertId(card.id)]}40, transparent 70%)` }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0E] via-[#0A0A0E]/60 to-transparent" />
+                      <div className="absolute left-1/2 top-4 -translate-x-1/2 transition-transform duration-500 group-hover:scale-110">
+                        <PersonaBadge persona={personaFromExpertId(card.id)} size={52} />
+                      </div>
 
                       <div className="absolute inset-x-2.5 bottom-2.5 flex items-start gap-2 text-white">
                         <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-[#E6D4B5] shrink-0 mt-0.5">
@@ -1097,12 +1124,7 @@ function AutoChatPageContent() {
                           <div className={`relative w-9 h-9 rounded-full overflow-hidden shrink-0 shadow-2xs ${
                             exchange.isLoading ? 'expert-portrait-active ring-2 ring-[#B89355]/40' : 'border border-[#E2DDD0]'
                           }`}>
-                            <Image
-                              src={exchange.expert.image}
-                              alt={exchange.expert.title}
-                              fill
-                              className="object-cover"
-                            />
+                            <PersonaBadge persona={personaFromExpertId(exchange.expert.id)} size={36} active={!!exchange.isLoading} />
                             {exchange.isLoading && (
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-light-sweep pointer-events-none" />
                             )}
@@ -1334,12 +1356,7 @@ function AutoChatPageContent() {
                             <div className="p-3.5 rounded-xl bg-white border border-[#EAE5DA] flex items-center justify-between gap-3 animate-in fade-in duration-300">
                               <div className="flex items-center gap-3">
                                 <div className={`relative w-11 h-11 rounded-full overflow-hidden ${getDomainThemeStyles(exchange.expert.domain).ring} shrink-0`}>
-                                  <Image
-                                    src={exchange.expert.image}
-                                    alt={exchange.expert.title}
-                                    fill
-                                    className="object-cover"
-                                  />
+                                  <PersonaBadge persona={personaFromExpertId(exchange.expert.id)} size={44} />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-1.5">
@@ -1471,7 +1488,9 @@ function AutoChatPageContent() {
               <input
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => { setInput(e.target.value); setNodSignal((n) => n + 1) }}
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setInputFocused(false)}
                 placeholder="Ask anything... Grid07 will automatically select the right expert."
                 disabled={submitting}
                 className="flex-1 bg-transparent border-none outline-none text-xs sm:text-[13px] text-[#1A1A1E] dark:text-[#F2EFE8] placeholder:text-[#9E988D] dark:placeholder:text-[#8C887E]"
@@ -1576,6 +1595,10 @@ function AutoChatPageContent() {
       {/* Right-Side Intelligence Panel */}
       {rightPanelOpen && (
         <aside className="w-[340px] xl:w-[360px] shrink-0 border-l border-[#E6E1D4] dark:border-[#38352D] bg-[#FFFFFF] dark:bg-[#1D1C19] flex flex-col h-screen overflow-hidden shadow-2xs z-20">
+          {/* Live 3D persona: the router (Core) hands off to the expert who answers */}
+          <div className="p-3 pb-0 shrink-0">
+            <PersonaStage persona={stagePersona} state={stageState} nodSignal={nodSignal} className="h-[260px] xl:h-[280px] w-full" />
+          </div>
           {/* Top Tabs */}
           <div className="h-14 px-5 border-b border-[#EFECE3] dark:border-[#38352D] flex items-center justify-between shrink-0">
             <div className="flex items-center gap-4 text-xs font-bold text-[#736E64] dark:text-[#A8A398]">
@@ -1628,13 +1651,11 @@ function AutoChatPageContent() {
                   <span className="text-[10.5px] font-bold text-[#8C887E] uppercase tracking-wider block mb-2">
                     Selected Expert
                   </span>
-                  <div className="h-[180px] rounded-2xl overflow-hidden relative border border-[#E6E1D4] shadow-xs group">
-                    <Image
-                      src={activeExpert.image}
-                      alt={activeExpert.title}
-                      fill
-                      className="object-cover object-top"
-                    />
+                  <div className="min-h-[104px] rounded-2xl overflow-hidden relative border border-[#E6E1D4] shadow-xs group bg-[#05060a]">
+                    <div className="absolute inset-0" style={{ background: `radial-gradient(80% 120% at 20% 50%, ${PERSONA_COLORS[personaFromExpertId(activeExpert.id)]}33, transparent 70%)` }} />
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                      <PersonaBadge persona={personaFromExpertId(activeExpert.id)} size={56} />
+                    </div>
 
                     {/* Genuine Status Pill */}
                     <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-[#0F0F13]/80 backdrop-blur-md border border-white/10 text-[#10B981] font-semibold text-[10px] flex items-center gap-1 shadow-2xs">
@@ -1662,7 +1683,7 @@ function AutoChatPageContent() {
                     </div>
 
                     {/* Dark Bottom Gradient Overlay */}
-                    <div className="absolute inset-x-2 bottom-2 p-2.5 rounded-xl bg-[#0F0F13]/85 backdrop-blur-md border border-white/10 text-white space-y-1">
+                    <div className="relative ml-[84px] mr-2 my-2 p-2.5 pr-16 rounded-xl text-white space-y-1">
                       <h4 className="font-bold text-xs text-white leading-tight">
                         {activeExpert.title}
                       </h4>
@@ -1900,7 +1921,7 @@ function AutoChatPageContent() {
                       >
                         <div className="flex items-center gap-2.5">
                           <div className="relative w-7 h-7 rounded-full overflow-hidden shrink-0 border border-[#E0DBD0]">
-                            <Image src={rel.image} alt={rel.title} fill className="object-cover" />
+                            <PersonaBadge persona={personaFromExpertId(rel.id)} size={28} />
                           </div>
                           <div>
                             <h5 className="font-semibold text-xs text-[#1A1A1E] group-hover:text-[#B89355] transition-colors">
