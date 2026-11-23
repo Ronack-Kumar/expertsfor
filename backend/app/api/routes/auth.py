@@ -1,12 +1,12 @@
 from datetime import timedelta
 from typing import Any
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.api import deps
-from app.core import security
+from app.core import security, rate_limit
 from app.core.config import settings
 from app.models import User
 from app.schemas import UserCreate, UserResponse, Token
@@ -15,8 +15,9 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserResponse)
 async def register(
-    user_in: UserCreate, db: AsyncSession = Depends(deps.get_db)
+    request: Request, user_in: UserCreate, db: AsyncSession = Depends(deps.get_db)
 ) -> Any:
+    rate_limit.check(f"register:{rate_limit.client_ip(request)}", limit=10, window_seconds=3600)
     # Check if user exists
     result = await db.execute(select(User).where(User.email == user_in.email))
     user = result.scalars().first()
@@ -36,9 +37,13 @@ async def register(
 
 @router.post("/login", response_model=Token)
 async def login_access_token(
+    request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(), 
     db: AsyncSession = Depends(deps.get_db)
 ) -> Any:
+    ip = rate_limit.client_ip(request)
+    rate_limit.check(f"login-ip:{ip}", limit=30, window_seconds=300)
+    rate_limit.check(f"login-acct:{form_data.username.lower()}", limit=10, window_seconds=300)
     result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalars().first()
     if not user or not security.verify_password(form_data.password, user.hashed_password):

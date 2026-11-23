@@ -85,6 +85,15 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   },
 ]
 
+// Follow-up suggestions that fit the expert who answered
+const FOLLOW_UPS: Record<string, string[]> = {
+  finance: ['Show historical data', 'Compare with other sectors', 'What are safer alternatives?', 'Summarize key points'],
+  code: ['Show a complete example', 'How would I test this?', 'What are common pitfalls?', 'Summarize key points'],
+  security: ['How do I test for this?', 'Show a secure code example', 'What else should I check?', 'Summarize key points'],
+  research: ['Cite more sources', 'What are the counterarguments?', 'Explain it more simply', 'Summarize key points'],
+  general: ['Explain it more simply', 'Give me an example', 'What should I do next?', 'Summarize key points'],
+}
+
 const EXPERT_CARDS: ExpertCardData[] = [
   {
     id: 'finance',
@@ -441,6 +450,8 @@ function AutoChatPageContent() {
 
   // Cancellation and race-condition tracking
   const abortControllerRef = useRef<AbortController | null>(null)
+  // Conversation created by this page during a send; its URL change must not reload history mid-answer
+  const selfCreatedConvRef = useRef<string | null>(null)
   const currentRequestIdRef = useRef<number>(0)
 
   // Sync theme attribute to document
@@ -546,9 +557,18 @@ function AutoChatPageContent() {
     let isCancelled = false
 
     const loadConversation = async () => {
+      if (selfCreatedConvRef.current && selfCreatedConvRef.current !== paramConvId) {
+        selfCreatedConvRef.current = null
+      }
       if (!paramConvId) {
         setConversationId(null)
         setExchanges([])
+        return
+      }
+
+      if (selfCreatedConvRef.current === paramConvId) {
+        // We just created this conversation and are streaming its first answer; keep live state
+        setConversationId(paramConvId)
         return
       }
 
@@ -665,6 +685,7 @@ function AutoChatPageContent() {
           { signal: controller.signal }
         )
         convId = convRes.data.id
+        selfCreatedConvRef.current = convId
         setConversationId(convId)
         if (typeof window !== 'undefined') {
           window.history.replaceState(null, '', `/chat?conversationId=${convId}`)
@@ -833,7 +854,8 @@ function AutoChatPageContent() {
     <div className="flex h-screen w-full bg-[#FAF8F5] overflow-hidden select-none font-sans text-[#1A1A1E]">
       {/* Central Main Workspace */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        {/* Subtle Top-Right Interior Background Image */}
+        {/* Subtle Top-Right Interior Background Image (welcome screen only, so it never sits behind messages) */}
+        {exchanges.length === 0 && (
         <div
           className="absolute right-0 top-0 w-[58%] h-[270px] pointer-events-none z-0 opacity-80 mix-blend-multiply overflow-hidden chat-hero-bg"
           style={{
@@ -849,6 +871,7 @@ function AutoChatPageContent() {
             className="object-cover object-right-top"
           />
         </div>
+        )}
 
         {/* Workspace Top Header Bar */}
         <header className="h-14 px-8 flex items-center justify-between border-b border-[#EAE5DA] bg-[#FAF8F5]/80 backdrop-blur-sm z-10 shrink-0">
@@ -1423,12 +1446,7 @@ function AutoChatPageContent() {
                     {/* Follow-up Action Chips on Latest Turn */}
                     {isLatest && !exchange.isLoading && (
                       <div className="flex flex-wrap items-center gap-2 pt-1 pb-2">
-                        {[
-                          'Show historical data',
-                          'Compare with other sectors',
-                          'What are safe alternatives?',
-                          'Summarize key points',
-                        ].map((chip, chipIdx) => (
+                        {(FOLLOW_UPS[exchange.expert.id] || FOLLOW_UPS.general).map((chip, chipIdx) => (
                           <button
                             key={chipIdx}
                             onClick={() => handleSendQuery(`${chip} regarding ${exchange.userQuery}`)}
