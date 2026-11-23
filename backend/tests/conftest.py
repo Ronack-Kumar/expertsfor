@@ -32,6 +32,11 @@ class RecordingProvider:
 
 @pytest_asyncio.fixture
 async def api_context(tmp_path, monkeypatch):
+    from app.core.config import settings as app_settings
+    # no DNS in CI sandboxes; format/disposable/strength checks still run
+    monkeypatch.setattr(app_settings, "CHECK_EMAIL_DNS", False)
+    from app.core import rate_limit
+    rate_limit._hits.clear()  # each test starts with fresh rate-limit counters
     database_path = (tmp_path / "test.db").as_posix()
     engine = create_async_engine(f"sqlite+aiosqlite:///{database_path}")
     session_factory = async_sessionmaker(engine, expire_on_commit=False)

@@ -126,6 +126,8 @@ npm run dev
 
 **Backend (Render, free):** on render.com choose *New > Blueprint*, pick this repository and confirm. `render.yaml` creates the `grid07-api` service; fill in `CORS_ORIGINS` (your Vercel URL) and the API keys you use (`GROQ_API_KEY`, `GEMINI_API_KEY`, optional `EXA_API_KEY` / `TAVILY_API_KEY`). The free plan sleeps when idle and its SQLite file resets on redeploys; set `DATABASE_URL` to a Postgres URL (for example a free Neon database, `postgresql+asyncpg://...`) to keep data.
 
+**Sign-up confirmation emails (optional, free):** create a free Brevo account, verify a sender email under *Senders*, create an API key under *SMTP & API > API keys*, then set `BREVO_API_KEY`, `MAIL_FROM_EMAIL` and `FRONTEND_URL` on the Render service. With both Brevo values set, new accounts must click the emailed link before signing in (override with `REQUIRE_EMAIL_VERIFICATION`). Brevo is used over SMTP because Render's free plan blocks outbound SMTP. Sign-up always rejects malformed, disposable and non-mail-receiving addresses and weak passwords (10+ characters, zxcvbn score 3+).
+
 **Frontend (Vercel, free):** import this repository, set *Root Directory* to `frontend`, and add `NEXT_PUBLIC_API_URL=https://<your-render-service>.onrender.com/api/v1`.
 
 ## Verification & Automated Tests

@@ -23,7 +23,8 @@ async def get_current_user(
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         user_id_str = payload.get("sub")
-        if user_id_str is None:
+        # email-verification and other single-purpose tokens must not grant API access
+        if user_id_str is None or payload.get("purpose"):
             raise credentials_exception
         import uuid
         user_id = uuid.UUID(user_id_str)
