@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Loader2, Lock, Mail, ArrowRight } from 'lucide-react'
@@ -16,6 +16,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+  useEffect(() => {
+    // set after hydration: the query string is only known in the browser
+    if (new URLSearchParams(window.location.search).get('session') === 'expired') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNotice('Your session ended. Please sign in again.')
+    }
+  }, [])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const setToken = useAuthStore((state) => state.setToken)
@@ -51,9 +59,9 @@ export default function LoginPage() {
 
       // Optionally record remember me preference in localStorage
       if (rememberMe) {
-        localStorage.setItem('grid07_remember_user', email.trim())
+        localStorage.setItem('expertsfor_remember_user', email.trim())
       } else {
-        localStorage.removeItem('grid07_remember_user')
+        localStorage.removeItem('expertsfor_remember_user')
       }
 
       const userRes = await api.get('/auth/me')
@@ -75,6 +83,11 @@ export default function LoginPage() {
     >
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         {/* Error Alert */}
+        {notice && !error && (
+          <div role="status" className="rounded-xl border border-[#D8BC88]/30 bg-[#D8BC88]/10 px-3.5 py-2.5 text-xs text-[#E9D9B6]">
+            {notice}
+          </div>
+        )}
         {error && (
           <div
             role="alert"
@@ -118,7 +131,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
-              placeholder="you@grid07.ai"
+              placeholder="you@expertsfor.me"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0F1015] border border-white/10 text-sm text-[#F2EFE8] placeholder-[#635D52] focus:outline-none focus:border-[#C7A66A] focus:ring-2 focus:ring-[#C7A66A]/20 transition-all"
@@ -200,7 +213,7 @@ export default function LoginPage() {
             </>
           ) : (
             <>
-              <span>Sign In to Grid07</span>
+              <span>Sign In to ExpertsFor</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}
