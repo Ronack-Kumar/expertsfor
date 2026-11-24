@@ -1,4 +1,4 @@
-# Execution Logs — Grid07 AI Engineering Assignment
+# Execution Logs — ExpertsFor AI Engineering Assignment
 
 All three phases executed on Windows 11, Python 3.13, using Groq API (`llama-3.1-8b-instant`).
 

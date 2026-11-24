@@ -1,1 +1,1 @@
-"""Idempotent database migrations for existing GRID07 installations."""
+"""Idempotent database migrations for existing ExpertsFor installations."""

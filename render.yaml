@@ -2,7 +2,7 @@
 # The frontend deploys separately on Vercel (root directory: frontend).
 services:
   - type: web
-    name: grid07-api
+    name: grid07-api # internal Render service name; renaming would create a new service
     runtime: python
     plan: free
     rootDir: backend
@@ -15,7 +15,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        sync: false # your Vercel URL, e.g. https://grid07.vercel.app
+        sync: false # your Vercel URL, e.g. https://expertsfor.me
       - key: GROQ_API_KEY
         sync: false
       - key: GEMINI_API_KEY
@@ -31,4 +31,4 @@ services:
       - key: MAIL_FROM_EMAIL
         sync: false # a sender address you verified in Brevo
       - key: FRONTEND_URL
-        sync: false # e.g. https://grid07.vercel.app (used in the email link)
+        sync: false # e.g. https://expertsfor.me (used in the email link)

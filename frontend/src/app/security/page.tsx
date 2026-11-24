@@ -30,7 +30,7 @@ export default function SecurityOverviewPage() {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-[#F2EFE8] group-hover:text-[#DFC492] transition-colors">
-              GRID<span className="text-[#C7A66A]">07</span>
+              Experts<span className="text-[#C7A66A]">For</span>
             </span>
             <span className="text-[10px] tracking-widest text-[#8C867B] uppercase font-mono -mt-0.5">
               Multi-Agent Orchestrator
@@ -59,14 +59,14 @@ export default function SecurityOverviewPage() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#F2EFE8] leading-tight">
-            Grid07 Security{' '}
+            ExpertsFor Security{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFC492] via-[#C7A66A] to-[#9A7840] font-serif italic">
               Architecture Overview
             </span>
           </h1>
 
           <p className="text-sm sm:text-base text-[#B6B0A4] leading-relaxed">
-            Grid07 treats all user input, external tool results, and internet search payloads as untrusted.
+            ExpertsFor treats all user input, external tool results, and internet search payloads as untrusted.
             Our orchestration framework enforces a multi-layered defense architecture designed to protect
             agent personas, credentials, and tenant isolation against adversarial disruption.
           </p>
@@ -188,7 +188,7 @@ export default function SecurityOverviewPage() {
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-              <span className="text-[11px] ml-2 text-[#C2BEB4]">grid07_security_pipeline.log</span>
+              <span className="text-[11px] ml-2 text-[#C2BEB4]">expertsfor_security_pipeline.log</span>
             </div>
             <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
               DEFENSES ACTIVE
@@ -206,7 +206,7 @@ export default function SecurityOverviewPage() {
       {/* Footer */}
       <footer className="relative z-20 w-full px-6 py-4 border-t border-white/[0.05] text-center text-xs text-[#787267] backdrop-blur-sm bg-[#090A0D]/40">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>&copy; {new Date().getFullYear()} Grid07 Intelligent Swarm Orchestrator. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} ExpertsFor Intelligent Swarm Orchestrator. All rights reserved.</span>
           <div className="flex items-center gap-4 text-[11px]">
             <Link href="/login" className="hover:text-[#F2EFE8] transition-colors">Sign In</Link>
             <span>&bull;</span>

@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
   return (
     <AuthLayout
       title="Set new password"
-      subtitle="Choose a secure password for your Grid07 orchestrator account"
+      subtitle="Choose a secure password for your ExpertsFor orchestrator account"
     >
       {success ? (
         <div className="py-6 text-center space-y-3 animate-auth-reveal">

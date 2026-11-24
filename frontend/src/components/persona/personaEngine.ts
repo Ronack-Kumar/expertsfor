@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// GRID07 persona engine: a 3D particle-dust head that follows the cursor,
+// ExpertsFor persona engine: a 3D particle-dust head that follows the cursor,
 // listens, thinks, hands off between experts and speaks.
 // Framework-free so it can be mounted by a small React wrapper.
 import * as THREE from 'three'
@@ -11,7 +11,7 @@ export type PersonaId = 'core' | 'finance' | 'code' | 'security' | 'research' | 
 export type PersonaState = 'idle' | 'listening' | 'thinking' | 'speaking'
 
 export const PERSONA_META: Record<PersonaId, { name: string; color: string; eyes: [number, number] }> = {
-  core: { name: 'Grid07 Core', color: '#bfe6ff', eyes: [1, 1] },
+  core: { name: 'ExpertsFor Core', color: '#bfe6ff', eyes: [1, 1] },
   finance: { name: 'Finance Advisor', color: '#ffc46b', eyes: [1.1, 0.9] },
   code: { name: 'Code Engineer', color: '#5cf2c8', eyes: [0, 0] },
   security: { name: 'Security Specialist', color: '#ff5a5f', eyes: [2.2, 0.35] },

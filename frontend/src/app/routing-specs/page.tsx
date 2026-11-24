@@ -30,7 +30,7 @@ export default function ModelRoutingSpecsPage() {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-[#F2EFE8] group-hover:text-[#DFC492] transition-colors">
-              GRID<span className="text-[#C7A66A]">07</span>
+              Experts<span className="text-[#C7A66A]">For</span>
             </span>
             <span className="text-[10px] tracking-widest text-[#8C867B] uppercase font-mono -mt-0.5">
               Multi-Agent Orchestrator
@@ -66,7 +66,7 @@ export default function ModelRoutingSpecsPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-[#B6B0A4] leading-relaxed">
-            Technical architecture and benchmark specifications for Grid07&apos;s dynamic catalog integration,
+            Technical architecture and benchmark specifications for ExpertsFor&apos;s dynamic catalog integration,
             semantic intent routing engine, free router dispatch, and automated fallback nodes.
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function ModelRoutingSpecsPage() {
 
             <p className="text-xs sm:text-sm text-[#A8A398] leading-relaxed">
               Implemented in <code className="text-[#DFC492] bg-white/5 px-1.5 py-0.5 rounded font-mono text-xs">app/services/llm/openrouter_catalog.py</code>.
-              Rather than maintaining hardcoded model IDs, Grid07 connects directly to OpenRouter&apos;s catalog API (<code className="font-mono text-xs">GET https://openrouter.ai/api/v1/models</code>),
+              Rather than maintaining hardcoded model IDs, ExpertsFor connects directly to OpenRouter&apos;s catalog API (<code className="font-mono text-xs">GET https://openrouter.ai/api/v1/models</code>),
               dynamically ingesting 460+ models with automated TTL caching and graceful fallback resilience.
             </p>
 
@@ -126,7 +126,7 @@ export default function ModelRoutingSpecsPage() {
             <p className="text-xs sm:text-sm text-[#A8A398] leading-relaxed">
               The <code className="text-emerald-400 font-mono text-xs">openrouter/free</code> router endpoint dynamically routes queries to
               available zero-cost LLMs (e.g. Meta Llama 3.3 70B, Qwen 2.5 Coder, Liquid LFM).
-              Grid07 inspects the actual underlying model selected by OpenRouter from the response payload (<code className="font-mono text-xs">data[&quot;model&quot;]</code>)
+              ExpertsFor inspects the actual underlying model selected by OpenRouter from the response payload (<code className="font-mono text-xs">data[&quot;model&quot;]</code>)
               and logs the true executing model into the execution trace.
             </p>
 
@@ -229,7 +229,7 @@ export default function ModelRoutingSpecsPage() {
       {/* Footer */}
       <footer className="relative z-20 w-full px-6 py-4 border-t border-white/[0.05] text-center text-xs text-[#787267] backdrop-blur-sm bg-[#090A0D]/40">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>&copy; {new Date().getFullYear()} Grid07 Intelligent Swarm Orchestrator. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} ExpertsFor Intelligent Swarm Orchestrator. All rights reserved.</span>
           <div className="flex items-center gap-4 text-[11px]">
             <Link href="/login" className="hover:text-[#F2EFE8] transition-colors">Sign In</Link>
             <span>&bull;</span>

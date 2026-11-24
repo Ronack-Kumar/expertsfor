@@ -2,12 +2,12 @@ $ErrorActionPreference = "Stop"
 
 function Write-Log {
     param ([string]$Message)
-    Write-Host "[GRID07] $Message" -ForegroundColor Cyan
+    Write-Host "[ExpertsFor] $Message" -ForegroundColor Cyan
 }
 
 function Write-ErrorLog {
     param ([string]$Message)
-    Write-Host "[GRID07 ERROR] $Message" -ForegroundColor Red
+    Write-Host "[ExpertsFor ERROR] $Message" -ForegroundColor Red
 }
 
 # Prerequisites check
@@ -52,11 +52,11 @@ if (Test-Path (Join-Path $BackendDir "venv")) {
 }
 
 Write-Log "Starting backend..."
-$BackendCommand = "[System.Console]::Title = 'GRID07 Backend'; cd '$BackendDir'; .\$VenvDir\Scripts\activate; if (`$?) { uvicorn app.main:app --reload --port 8000 } else { Write-Host 'Failed to activate venv' -ForegroundColor Red }"
+$BackendCommand = "[System.Console]::Title = 'ExpertsFor Backend'; cd '$BackendDir'; .\$VenvDir\Scripts\activate; if (`$?) { uvicorn app.main:app --reload --port 8000 } else { Write-Host 'Failed to activate venv' -ForegroundColor Red }"
 Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "`"$BackendCommand`""
 
 Write-Log "Starting frontend..."
-$FrontendCommand = "[System.Console]::Title = 'GRID07 Frontend'; cd '$FrontendDir'; if (-not (Test-Path 'node_modules')) { Write-Host 'Installing frontend dependencies...'; npm install }; npm run dev"
+$FrontendCommand = "[System.Console]::Title = 'ExpertsFor Frontend'; cd '$FrontendDir'; if (-not (Test-Path 'node_modules')) { Write-Host 'Installing frontend dependencies...'; npm install }; npm run dev"
 Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "`"$FrontendCommand`""
 
 Write-Log "Backend: http://localhost:8000"
