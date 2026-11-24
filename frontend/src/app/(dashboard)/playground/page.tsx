@@ -437,7 +437,7 @@ export default function PlaygroundPage() {
                   </div>
                   <div className="space-y-1.5 max-w-md">
                     <h2 className="font-semibold text-foreground text-base">
-                      {selectedAgent ? selectedAgent.name : 'Grid07 Agent Playground'}
+                      {selectedAgent ? selectedAgent.name : 'ExpertsFor Agent Playground'}
                     </h2>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       {selectedAgent?.description ||

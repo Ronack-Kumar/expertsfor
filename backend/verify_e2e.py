@@ -12,7 +12,7 @@ from app.services.security.injection import detect_injection, get_system_persona
 
 async def verify_e2e():
     print("==================================================")
-    print("      GRID07 COMPREHENSIVE E2E VERIFICATION      ")
+    print("      ExpertsFor COMPREHENSIVE E2E VERIFICATION      ")
     print("==================================================")
     
     # 1. Inspect LLM Router & Configured Providers

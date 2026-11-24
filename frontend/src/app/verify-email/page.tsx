@@ -66,7 +66,7 @@ function VerifyEmail() {
 
 export default function VerifyEmailPage() {
   return (
-    <AuthLayout title="Confirm your email" subtitle="One quick step to activate your GRID07 account">
+    <AuthLayout title="Confirm your email" subtitle="One quick step to activate your ExpertsFor account">
       <Suspense fallback={null}>
         <VerifyEmail />
       </Suspense>

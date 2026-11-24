@@ -4,7 +4,7 @@ from app.services.llm import LLMError
 
 
 async def authenticated_workspace(client, name="Test WS"):
-    email = f"tester-{uuid.uuid4()}@grid07-tests.dev"
+    email = f"tester-{uuid.uuid4()}@expertsfor-tests.dev"
     password = "orbit-lantern-maple-73"
     register = await client.post("/api/v1/auth/register", json={"email": email, "password": password})
     assert register.status_code == 200, register.text

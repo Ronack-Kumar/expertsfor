@@ -36,7 +36,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-[#F2EFE8] group-hover:text-[#DFC492] transition-colors">
-              GRID<span className="text-[#C7A66A]">07</span>
+              Experts<span className="text-[#C7A66A]">For</span>
             </span>
             <span className="text-[10px] tracking-widest text-[#8C867B] uppercase font-mono -mt-0.5">
               Multi-Agent Orchestrator
@@ -78,7 +78,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             </h1>
 
             <p className="text-sm sm:text-base text-[#B6B0A4] max-w-xl leading-relaxed">
-              Grid07 coordinates specialized autonomous agents across multiple LLM providers,
+              ExpertsFor coordinates specialized autonomous agents across multiple LLM providers,
               enforcing persona-driven routing, live neural search, and stateful verification workflows.
             </p>
           </div>
@@ -175,7 +175,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
       {/* 4. Minimalist Footer */}
       <footer className="relative z-20 w-full px-6 py-4 border-t border-white/[0.05] text-center text-xs text-[#787267] backdrop-blur-sm bg-[#090A0D]/40">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>&copy; {new Date().getFullYear()} Grid07 Intelligent Swarm Orchestrator. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} ExpertsFor Intelligent Swarm Orchestrator. All rights reserved.</span>
           <div className="flex items-center gap-4 text-[11px]">
             <Link
               href="/security"

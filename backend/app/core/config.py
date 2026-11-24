@@ -4,16 +4,16 @@ from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "GRID07 SaaS"
+    PROJECT_NAME: str = "ExpertsFor SaaS"
     API_V1_STR: str = "/api/v1"
     
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_DB: str = "grid07"
+    POSTGRES_DB: str = "expertsfor"
     POSTGRES_PORT: str = "5432"
     
-    DATABASE_URL: str = "sqlite+aiosqlite:///./grid07.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./expertsfor.db"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     # ── Account email (Brevo HTTP API; Render's free plan blocks SMTP) ──
     BREVO_API_KEY: str = ""
     MAIL_FROM_EMAIL: str = ""          # a sender address verified in Brevo
-    MAIL_FROM_NAME: str = "GRID07"
+    MAIL_FROM_NAME: str = "ExpertsFor"
     FRONTEND_URL: str = "http://localhost:3000"
     # unset = required whenever email sending is configured
     REQUIRE_EMAIL_VERIFICATION: bool | None = None

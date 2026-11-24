@@ -400,7 +400,7 @@ function AutoChatPageContent() {
   // Theme toggle state
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('grid07_theme') as 'light' | 'dark' | null
+      const savedTheme = localStorage.getItem('expertsfor_theme') as 'light' | 'dark' | null
       return savedTheme || 'light'
     }
     return 'light'
@@ -470,21 +470,21 @@ function AutoChatPageContent() {
   useEffect(() => {
     const handleThemeChange = () => {
       if (typeof window !== 'undefined') {
-        const saved = (localStorage.getItem('grid07_theme') as 'light' | 'dark') || 'light'
+        const saved = (localStorage.getItem('expertsfor_theme') as 'light' | 'dark') || 'light'
         setTheme(saved)
       }
     }
-    window.addEventListener('grid07_theme_change', handleThemeChange)
-    return () => window.removeEventListener('grid07_theme_change', handleThemeChange)
+    window.addEventListener('expertsfor_theme_change', handleThemeChange)
+    return () => window.removeEventListener('expertsfor_theme_change', handleThemeChange)
   }, [])
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light'
     setTheme(next)
     if (typeof window !== 'undefined') {
-      localStorage.setItem('grid07_theme', next)
+      localStorage.setItem('expertsfor_theme', next)
       document.documentElement.setAttribute('data-theme', next)
-      window.dispatchEvent(new Event('grid07_theme_change'))
+      window.dispatchEvent(new Event('expertsfor_theme_change'))
     }
   }
 
@@ -812,7 +812,7 @@ function AutoChatPageContent() {
       }
 
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('grid07_conversations_updated'))
+        window.dispatchEvent(new CustomEvent('expertsfor_conversations_updated'))
       }
     } catch (err: unknown) {
       if (requestId !== currentRequestIdRef.current) return
@@ -1005,7 +1005,7 @@ function AutoChatPageContent() {
                       <span className="text-[#876F43] font-serif italic">The Right Expert.</span>
                     </h1>
                     <p className="mt-2 text-xs sm:text-[13px] text-[#635D52] max-w-xl font-normal leading-relaxed">
-                      Ask anything — Grid07 understands your intent, selects the best expert, and
+                      Ask anything — ExpertsFor understands your intent, selects the best expert, and
                       delivers accurate, real-world answers using verified free-tier models.
                     </p>
                   </div>
@@ -1416,7 +1416,7 @@ function AutoChatPageContent() {
                           )}
 
                           <p className="text-xs text-[#635D52] leading-relaxed">
-                            Grid07 coordinates multi-agent intent routing, security boundary verification, and verified free-tier models to deliver authoritative responses.
+                            ExpertsFor coordinates multi-agent intent routing, security boundary verification, and verified free-tier models to deliver authoritative responses.
                           </p>
 
                           <div className="flex items-center justify-end pt-1">
@@ -1522,7 +1522,7 @@ function AutoChatPageContent() {
                 onChange={(e) => { setInput(e.target.value); setNodSignal((n) => n + 1) }}
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
-                placeholder="Ask anything... Grid07 will automatically select the right expert."
+                placeholder="Ask anything... ExpertsFor will automatically select the right expert."
                 disabled={submitting}
                 className="flex-1 bg-transparent border-none outline-none text-xs sm:text-[13px] text-[#1A1A1E] dark:text-[#F2EFE8] placeholder:text-[#9E988D] dark:placeholder:text-[#8C887E]"
               />

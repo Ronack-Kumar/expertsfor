@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout
       title="Reset your password"
-      subtitle="Enter the email associated with your Grid07 account and we'll send you recovery instructions"
+      subtitle="Enter the email associated with your ExpertsFor account and we'll send you recovery instructions"
     >
       {submitted ? (
         <div className="py-4 text-center space-y-4 animate-auth-reveal">
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="you@grid07.ai"
+                placeholder="you@expertsfor.me"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0F1015] border border-white/10 text-sm text-[#F2EFE8] placeholder-[#635D52] focus:outline-none focus:border-[#C7A66A] focus:ring-2 focus:ring-[#C7A66A]/20 transition-all"

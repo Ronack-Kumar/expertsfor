@@ -21,7 +21,7 @@ const handwriting = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Grid07 — Multi Expert AI Workspace",
+  title: "ExpertsFor — Multi Expert AI Workspace",
   description: "Intelligent expert routing and free-model orchestration.",
 };
 
@@ -35,7 +35,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('grid07_theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('expertsfor_theme')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
       </head>

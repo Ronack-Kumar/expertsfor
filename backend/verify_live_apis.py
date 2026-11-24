@@ -1,5 +1,5 @@
 """
-Grid07 Live API Verification Script
+ExpertsFor Live API Verification Script
 Tests real online API credentials for:
 1. Groq LLM
 2. Google Gemini LLM
@@ -229,7 +229,7 @@ async def test_full_pipeline_live():
 
 async def main():
     print("==================================================")
-    print("GRID07 ONLINE API LIVE VERIFICATION")
+    print("ExpertsFor ONLINE API LIVE VERIFICATION")
     print("==================================================")
     
     groq_ok = await test_groq()
