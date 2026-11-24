@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/store'
 import { api } from '@/lib/api'
+import axios from 'axios'
 import { getApiErrorMessage } from '@/lib/errors'
 import type { User, Workspace, Conversation } from '@/lib/types'
 
@@ -114,13 +115,19 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
         const currentWorkspace = useAuthStore.getState().workspace
         if (!currentWorkspace || currentWorkspace.id !== selected.id) setWorkspace(selected)
       } catch (requestError: unknown) {
+        // invalid/expired login: clear it and go to sign in (the API client also redirects)
+        if (axios.isAxiosError(requestError) && requestError.response?.status === 401) {
+          logout()
+          router.replace('/login?session=expired')
+          return
+        }
         setError(getApiErrorMessage(requestError, 'Could not initialize the workspace.'))
       } finally {
         setInitializing(false)
       }
     }
     void initialize()
-  }, [token, router, setWorkspace])
+  }, [token, router, setWorkspace, logout])
 
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [loadingConversations, setLoadingConversations] = useState(false)
