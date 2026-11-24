@@ -83,3 +83,32 @@ def read_purpose_token(token: str, purpose: str) -> str | None:
     if payload.get("purpose") != purpose:
         return None
     return payload.get("sub")
+
+
+def password_fingerprint(hashed_password: str) -> str:
+    """Short digest of the stored hash. Put in reset tokens so a token stops
+    working as soon as the password changes (making each link single-use)."""
+    import hashlib
+
+    return hashlib.sha256(hashed_password.encode()).hexdigest()[:16]
+
+
+def create_reset_token(subject: str, hashed_password: str) -> str:
+    to_encode = {
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+        "sub": str(subject),
+        "purpose": "reset-password",
+        "pwv": password_fingerprint(hashed_password),
+    }
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+
+
+def read_reset_token(token: str) -> tuple[str, str] | None:
+    """Return (user id, password fingerprint) for a valid, unexpired reset token."""
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.InvalidTokenError:
+        return None
+    if payload.get("purpose") != "reset-password" or not payload.get("sub") or not payload.get("pwv"):
+        return None
+    return payload["sub"], payload["pwv"]

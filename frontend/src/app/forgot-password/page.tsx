@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { api } from '@/lib/api'
+import { getApiErrorMessage } from '@/lib/errors'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, Loader2, Mail } from 'lucide-react'
 import { AuthLayout } from '@/components/auth/AuthLayout'
@@ -10,17 +12,24 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [emailOff, setEmailOff] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    // Simulate recovery email dispatch with accessible feedback
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const res = await api.post<{ sent: boolean; email_enabled: boolean }>('/auth/forgot-password', {
+        email: email.trim(),
+      })
+      setEmailOff(res.data.email_enabled === false)
       setSubmitted(true)
-    }, 1000)
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'Something went wrong. Please try again in a minute.'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -35,11 +44,17 @@ export default function ForgotPasswordPage() {
           </div>
           <div className="space-y-1.5">
             <h3 className="text-base font-semibold text-[#F2EFE8]">
-              Recovery Email Dispatched
+              {emailOff ? 'Email isn’t set up yet' : 'Check your inbox'}
             </h3>
-            <p className="text-xs text-[#A8A398] leading-relaxed max-w-sm mx-auto">
-              If an account exists for <strong className="text-[#F2EFE8]">{email}</strong>, you will receive password reset instructions shortly.
-            </p>
+            {emailOff ? (
+              <p className="text-xs text-[#A8A398] leading-relaxed max-w-sm mx-auto">
+                Password reset emails aren&apos;t switched on for this site yet, so no email was sent. Please contact the site owner to reset your password.
+              </p>
+            ) : (
+              <p className="text-xs text-[#A8A398] leading-relaxed max-w-sm mx-auto">
+                If an account exists for <strong className="text-[#F2EFE8]">{email}</strong>, we&apos;ve sent a reset link. It expires in 30 minutes. Check spam if you don&apos;t see it.
+              </p>
+            )}
           </div>
 
           <div className="pt-3">
