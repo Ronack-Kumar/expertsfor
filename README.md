@@ -1,6 +1,6 @@
-# Grid07 — Intelligent Expert-Agent Routing & Multi-LLM Orchestration Platform
+# ExpertsFor — Intelligent Expert-Agent Routing & Multi-LLM Orchestration Platform
 
-Grid07 is a production-oriented intelligent multi-agent platform providing two distinct operational modes:
+ExpertsFor is a production-oriented intelligent multi-agent platform providing two distinct operational modes:
 - **Automatic Routing Mode (`/chat`)**: Users submit arbitrary questions without picking a persona or tuning LLM parameters. The system automatically identifies intent, selects the most relevant configured expert persona, selects an optimal verified free-tier model, and executes the request securely via an observable LangGraph pipeline with zero hidden paid fallbacks.
 - **Explicit Developer Mode (`/playground`)**: Developers manually choose a specific persona, override the provider (Groq, Gemini, OpenRouter, OpenAI, xAI, or custom OpenAI-compatible endpoints), and select specific models. Explicit selections are strictly respected and executed as requested without automatic redirection.
 
@@ -44,7 +44,7 @@ Grid07 is a production-oriented intelligent multi-agent platform providing two d
 
 6. **Fully Animated Authentication Experience**:
    - Linear-inspired dark aesthetic (`#090A0D` canvas, warm gold `#C7A66A` highlights, graphite perspective grid).
-   - **Connected Agent Network**: Live SVG + DOM visual network with Research, Coding, Data, and Custom personas connected to a central Grid07 core with traveling light packets and organic 3.4s task routing cycle.
+   - **Connected Agent Network**: Live SVG + DOM visual network with Research, Coding, Data, and Custom personas connected to a central ExpertsFor core with traveling light packets and organic 3.4s task routing cycle.
    - Coordinated continuous 3D perspective grid travel, ambient drifting light fields, and floating particles.
    - Dedicated pages: `/login` (with password visibility toggle and remember me), `/register`, `/forgot-password`, `/reset-password`.
    - Accessible footer links:

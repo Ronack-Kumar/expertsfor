@@ -226,7 +226,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between pb-3 border-b border-[#F0ECE3] dark:border-[#38352D]">
           <div>
             <h3 className="font-bold text-sm text-[#1A1A1E] dark:text-[#F2EFE8]">Recent Execution Traces</h3>
-            <p className="text-[11px] text-[#736E65] dark:text-[#A8A398]">Last verified inferences processed through Grid07</p>
+            <p className="text-[11px] text-[#736E65] dark:text-[#A8A398]">Last verified inferences processed through ExpertsFor</p>
           </div>
           <Link
             href="/executions"

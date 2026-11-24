@@ -7,11 +7,11 @@ import requests
 
 
 def main() -> None:
-    api = os.getenv("GRID07_API_URL", "http://localhost:8000/api/v1")
-    email = os.getenv("GRID07_TEST_EMAIL")
-    password = os.getenv("GRID07_TEST_PASSWORD")
+    api = os.getenv("EXPERTSFOR_API_URL", "http://localhost:8000/api/v1")
+    email = os.getenv("EXPERTSFOR_TEST_EMAIL")
+    password = os.getenv("EXPERTSFOR_TEST_PASSWORD")
     if not email or not password:
-        raise SystemExit("Set GRID07_TEST_EMAIL and GRID07_TEST_PASSWORD for the live integration check.")
+        raise SystemExit("Set EXPERTSFOR_TEST_EMAIL and EXPERTSFOR_TEST_PASSWORD for the live integration check.")
 
     session = requests.Session()
     login = session.post(f"{api}/auth/login", data={"username": email, "password": password}, timeout=10)

@@ -22,7 +22,7 @@ export default function LandingPage() {
             <Sparkles className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg tracking-tight text-[#1A1A1E] leading-none">GRID07</span>
+            <span className="font-bold text-lg tracking-tight text-[#1A1A1E] leading-none">ExpertsFor</span>
             <span className="text-[9px] font-semibold text-[#8C887E] tracking-wider uppercase mt-0.5">
               Multi-Expert AI Workspace
             </span>
@@ -61,7 +61,7 @@ export default function LandingPage() {
             <div className="inline-flex items-center rounded-full border border-[#D5CDBD] bg-white px-4 py-1.5 text-xs shadow-2xs">
               <span className="flex h-2 w-2 rounded-full bg-[#10B981] mr-2 animate-pulse" />
               <span className="text-[#555046] font-medium">
-                GRID07 Semantic Routing Engine Online • 5 Verified Free-Tier Personas
+                ExpertsFor Semantic Routing Engine Online • 5 Verified Free-Tier Personas
               </span>
             </div>
 
@@ -127,7 +127,7 @@ export default function LandingPage() {
                 System Architecture
               </h2>
               <p className="text-[#6E685E] text-sm sm:text-base max-w-xl mx-auto">
-                The core modules powering Grid07&apos;s multi-expert routing and execution pipeline.
+                The core modules powering ExpertsFor&apos;s multi-expert routing and execution pipeline.
               </p>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
@@ -162,7 +162,7 @@ export default function LandingPage() {
                   Prompt Injection Defense
                 </h2>
                 <p className="text-[#4D473E] text-base leading-relaxed">
-                  GRID07 treats all external content as untrusted. A two-layered defense architecture utilizes
+                  ExpertsFor treats all external content as untrusted. A two-layered defense architecture utilizes
                   pre-filtering and system-level persona locks to prevent adversarial overrides.
                 </p>
                 <ul className="space-y-2.5 text-sm text-[#38332A] pt-2">
@@ -204,7 +204,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-[#E8E3D8] py-8 px-6 bg-[#FAF8F5] text-center text-xs text-[#8C867B]">
-        Grid07 Intelligent Expert Platform • All rights reserved.
+        ExpertsFor Intelligent Expert Platform • All rights reserved.
       </footer>
     </div>
   )

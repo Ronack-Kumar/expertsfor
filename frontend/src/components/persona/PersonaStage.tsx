@@ -15,7 +15,7 @@ export const PERSONA_COLORS: Record<PersonaId, string> = {
 }
 
 const PERSONA_NAMES: Record<PersonaId, string> = {
-  core: 'Grid07 Core',
+  core: 'ExpertsFor Core',
   finance: 'Finance Advisor',
   code: 'Code Engineer',
   security: 'Security Specialist',
@@ -30,7 +30,7 @@ const STATE_LABEL: Record<PersonaState, string> = {
   speaking: 'Speaking',
 }
 
-/** Map a GRID07 expert card id (or a custom agent) to a persona look. */
+/** Map a ExpertsFor expert card id (or a custom agent) to a persona look. */
 export function personaFromExpertId(id?: string | null): PersonaId {
   switch (id) {
     case 'finance':
@@ -54,7 +54,7 @@ interface PersonaStageProps {
   quality?: 'high' | 'low'
 }
 
-const FOLLOW_KEY = 'grid07_persona_follow'
+const FOLLOW_KEY = 'expertsfor_persona_follow'
 
 export default function PersonaStage({ persona, state, nodSignal = 0, className = '', showControls = true, quality = 'high' }: PersonaStageProps) {
   const wrapRef = useRef<HTMLDivElement>(null)

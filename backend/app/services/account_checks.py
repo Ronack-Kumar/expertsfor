@@ -48,7 +48,7 @@ def check_password(password: str, email: str) -> None:
     if len(password) < MIN_PASSWORD_LENGTH:
         raise AccountCheckError(f"Password must be at least {MIN_PASSWORD_LENGTH} characters.")
     local = email.split("@")[0]
-    result = zxcvbn(password[:100], user_inputs=[email, local, "grid07"])
+    result = zxcvbn(password[:100], user_inputs=[email, local, "expertsfor"])
     if result["score"] < MIN_PASSWORD_SCORE:
         hint = result["feedback"].get("warning") or "It is too easy to guess."
         tips = " ".join(result["feedback"].get("suggestions") or [])

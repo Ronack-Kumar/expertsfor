@@ -76,7 +76,7 @@ export default function StatusPage() {
           checking: false,
           operational: data.status === 'ok',
           statusCode: response.status,
-          serviceName: data.service || 'Grid07 Backend',
+          serviceName: data.service || 'ExpertsFor Backend',
           latencyMs: latency,
           lastChecked: new Date().toLocaleTimeString(),
           errorMessage: null,
@@ -130,7 +130,7 @@ export default function StatusPage() {
             checking: false,
             operational: data.status === 'ok',
             statusCode: response.status,
-            serviceName: data.service || 'Grid07 Backend',
+            serviceName: data.service || 'ExpertsFor Backend',
             latencyMs: latency,
             lastChecked: new Date().toLocaleTimeString(),
             errorMessage: null,
@@ -183,7 +183,7 @@ export default function StatusPage() {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-[#F2EFE8] group-hover:text-[#DFC492] transition-colors">
-              GRID<span className="text-[#C7A66A]">07</span>
+              Experts<span className="text-[#C7A66A]">For</span>
             </span>
             <span className="text-[10px] tracking-widest text-[#8C867B] uppercase font-mono -mt-0.5">
               Multi-Agent Orchestrator
@@ -212,13 +212,13 @@ export default function StatusPage() {
               <span>System Telemetry & Health Probe</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#F2EFE8]">
-              Grid07 System{' '}
+              ExpertsFor System{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFC492] via-[#C7A66A] to-[#9A7840] font-serif italic">
                 Status
               </span>
             </h1>
             <p className="text-xs sm:text-sm text-[#A8A398]">
-              Live operational health probed directly from the Grid07 Core backend service.
+              Live operational health probed directly from the ExpertsFor Core backend service.
             </p>
           </div>
 
@@ -247,7 +247,7 @@ export default function StatusPage() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-[#F2EFE8]">
-                  {health.serviceName || 'Grid07 Core API'}
+                  {health.serviceName || 'ExpertsFor Core API'}
                 </h3>
                 <p className="text-xs text-[#8C867B] font-mono mt-0.5">
                   Target: http://localhost:8000/health
@@ -351,7 +351,7 @@ export default function StatusPage() {
       {/* Footer */}
       <footer className="relative z-20 w-full px-6 py-4 border-t border-white/[0.05] text-center text-xs text-[#787267] backdrop-blur-sm bg-[#090A0D]/40">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>&copy; {new Date().getFullYear()} Grid07 Intelligent Swarm Orchestrator. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} ExpertsFor Intelligent Swarm Orchestrator. All rights reserved.</span>
           <div className="flex items-center gap-4 text-[11px]">
             <Link href="/login" className="hover:text-[#F2EFE8] transition-colors">Sign In</Link>
             <span>&bull;</span>
