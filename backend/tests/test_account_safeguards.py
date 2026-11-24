@@ -96,3 +96,65 @@ async def test_cannot_write_into_another_workspaces_conversation(api_context):
         headers=tokens["a"],
     )
     assert r.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_password_reset_flow(api_context, monkeypatch):
+    c = api_context["client"]
+    sent = []
+
+    async def fake_reset(to, token):
+        sent.append(token)
+        return True
+
+    await register(c, "reset@grid07-tests.dev")
+    monkeypatch.setattr(settings, "BREVO_API_KEY", "test-key")
+    monkeypatch.setattr(settings, "MAIL_FROM_EMAIL", "sender@grid07-tests.dev")
+    monkeypatch.setattr(settings, "REQUIRE_EMAIL_VERIFICATION", False)
+    monkeypatch.setattr(mailer, "send_password_reset_email", fake_reset)
+
+    # same answer for known and unknown addresses
+    known = await c.post("/api/v1/auth/forgot-password", json={"email": "reset@grid07-tests.dev"})
+    unknown = await c.post("/api/v1/auth/forgot-password", json={"email": "nobody@grid07-tests.dev"})
+    assert known.status_code == unknown.status_code == 200
+    assert known.json() == unknown.json()
+    assert len(sent) == 1
+
+    token = sent[0]
+    # the reset token is not an API token
+    assert (await c.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})).status_code == 401
+    # weak password refused, link still usable afterwards
+    assert (await c.post("/api/v1/auth/reset-password", json={"token": token, "password": "Qwerty@123"})).status_code == 422
+    new_pw = "copper-violet-harbor-58"
+    assert (await c.post("/api/v1/auth/reset-password", json={"token": token, "password": new_pw})).status_code == 200
+    # single use
+    assert (await c.post("/api/v1/auth/reset-password", json={"token": token, "password": "another-strong-pass-91"})).status_code == 400
+    assert (await login(c, "reset@grid07-tests.dev", new_pw)).status_code == 200
+    assert (await login(c, "reset@grid07-tests.dev")).status_code == 400
+    # junk token
+    assert (await c.post("/api/v1/auth/reset-password", json={"token": "x" * 40, "password": new_pw})).status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_duplicate_signup_is_not_revealed_when_email_is_on(api_context, monkeypatch):
+    c = api_context["client"]
+    notified = []
+
+    async def fake_exists(to):
+        notified.append(to)
+        return True
+
+    async def fake_verify(to, token):
+        return True
+
+    await register(c, "taken@grid07-tests.dev")
+    monkeypatch.setattr(settings, "BREVO_API_KEY", "test-key")
+    monkeypatch.setattr(settings, "MAIL_FROM_EMAIL", "sender@grid07-tests.dev")
+    monkeypatch.setattr(mailer, "send_account_exists_email", fake_exists)
+    monkeypatch.setattr(mailer, "send_verification_email", fake_verify)
+
+    dup = await register(c, "taken@grid07-tests.dev")
+    fresh = await register(c, "fresh@grid07-tests.dev")
+    assert dup.status_code == fresh.status_code == 200
+    assert dup.json()["email_verified"] is False and fresh.json()["email_verified"] is False
+    assert notified == ["taken@grid07-tests.dev"]
