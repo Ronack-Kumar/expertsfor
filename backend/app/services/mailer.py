@@ -47,3 +47,39 @@ async def send_verification_email(to: str, token: str) -> bool:
 </div>"""
     text_body = f"Confirm your GRID07 account:\n{link}\n\nThis link expires in 24 hours. If you didn't sign up, ignore this email."
     return await send_email(to, "Confirm your GRID07 account", html_body, text_body)
+
+
+def _button_email(title: str, intro: str, button: str, link: str, footer: str) -> str:
+    safe = html.escape(link, quote=True)
+    return f"""<div style="font-family:Inter,Arial,sans-serif;max-width:480px;margin:auto;padding:32px;color:#1A1A1E">
+<h2 style="margin:0 0 12px">{html.escape(title)}</h2>
+<p style="color:#555;line-height:1.6">{html.escape(intro)}</p>
+<p style="margin:28px 0"><a href="{safe}" style="background:#1A1A1E;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600">{html.escape(button)}</a></p>
+<p style="color:#888;font-size:13px;line-height:1.6">{html.escape(footer)}</p>
+</div>"""
+
+
+async def send_password_reset_email(to: str, token: str) -> bool:
+    link = f"{settings.FRONTEND_URL.rstrip('/')}/reset-password?token={token}"
+    body = _button_email(
+        "Reset your password",
+        "Someone asked to reset the password for this account. If it was you, choose a new password below.",
+        "Choose a new password",
+        link,
+        "This link works once and expires in 30 minutes. If you didn't ask for this, ignore this email; your password stays the same.",
+    )
+    text = f"Reset your password:\n{link}\n\nThis link works once and expires in 30 minutes. If you didn't ask for it, ignore this email."
+    return await send_email(to, "Reset your password", body, text)
+
+
+async def send_account_exists_email(to: str) -> bool:
+    base = settings.FRONTEND_URL.rstrip("/")
+    body = _button_email(
+        "You already have an account",
+        "Someone tried to create a new account with this email address, but you already have one. You can sign in, or reset your password if you've forgotten it.",
+        "Reset password",
+        f"{base}/forgot-password",
+        "If this wasn't you, you can ignore this email; nothing has changed.",
+    )
+    text = f"You already have an account with this email. Sign in at {base}/login or reset your password at {base}/forgot-password."
+    return await send_email(to, "You already have an account", body, text)
