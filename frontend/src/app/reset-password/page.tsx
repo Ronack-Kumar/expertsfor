@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { api } from '@/lib/api'
+import { getApiErrorMessage } from '@/lib/errors'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, CheckCircle2, Loader2, Lock, ArrowRight } from 'lucide-react'
@@ -15,12 +17,24 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
   const router = useRouter()
 
+  const [token, setToken] = useState('')
+  useEffect(() => {
+    // the link's token is only known in the browser
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setToken(new URLSearchParams(window.location.search).get('token') || '')
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.')
+    if (!token) {
+      setError('This reset link is incomplete. Request a new one from the "Forgot password" page.')
+      return
+    }
+
+    if (password.length < 10) {
+      setError('Password must be at least 10 characters long.')
       return
     }
 
@@ -30,15 +44,17 @@ export default function ResetPasswordPage() {
     }
 
     setLoading(true)
-
-    // Simulate password update with clear feedback
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      await api.post('/auth/reset-password', { token, password })
       setSuccess(true)
       setTimeout(() => {
         router.push('/login')
       }, 1800)
-    }, 1000)
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, 'Could not reset your password. Request a new link and try again.'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
