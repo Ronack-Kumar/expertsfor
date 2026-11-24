@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Loader2, Lock, Mail, ArrowRight } from 'lucide-react'
@@ -16,6 +16,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+  useEffect(() => {
+    // set after hydration: the query string is only known in the browser
+    if (new URLSearchParams(window.location.search).get('session') === 'expired') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNotice('Your session ended. Please sign in again.')
+    }
+  }, [])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const setToken = useAuthStore((state) => state.setToken)
@@ -75,6 +83,11 @@ export default function LoginPage() {
     >
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         {/* Error Alert */}
+        {notice && !error && (
+          <div role="status" className="rounded-xl border border-[#D8BC88]/30 bg-[#D8BC88]/10 px-3.5 py-2.5 text-xs text-[#E9D9B6]">
+            {notice}
+          </div>
+        )}
         {error && (
           <div
             role="alert"
