@@ -40,13 +40,13 @@ async def send_verification_email(to: str, token: str) -> bool:
     link = f"{settings.FRONTEND_URL.rstrip('/')}/verify-email?token={token}"
     safe = html.escape(link, quote=True)
     html_body = f"""<div style="font-family:Inter,Arial,sans-serif;max-width:480px;margin:auto;padding:32px;color:#1A1A1E">
-<h2 style="margin:0 0 12px">Confirm your GRID07 account</h2>
-<p style="color:#555;line-height:1.6">Thanks for signing up. Confirm this is your email address to start using GRID07.</p>
+<h2 style="margin:0 0 12px">Confirm your ExpertsFor account</h2>
+<p style="color:#555;line-height:1.6">Thanks for signing up. Confirm this is your email address to start using ExpertsFor.</p>
 <p style="margin:28px 0"><a href="{safe}" style="background:#1A1A1E;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600">Confirm email</a></p>
 <p style="color:#888;font-size:13px;line-height:1.6">This link expires in 24 hours. If you didn't create an account, you can ignore this email.</p>
 </div>"""
-    text_body = f"Confirm your GRID07 account:\n{link}\n\nThis link expires in 24 hours. If you didn't sign up, ignore this email."
-    return await send_email(to, "Confirm your GRID07 account", html_body, text_body)
+    text_body = f"Confirm your ExpertsFor account:\n{link}\n\nThis link expires in 24 hours. If you didn't sign up, ignore this email."
+    return await send_email(to, "Confirm your ExpertsFor account", html_body, text_body)
 
 
 def _button_email(title: str, intro: str, button: str, link: str, footer: str) -> str:

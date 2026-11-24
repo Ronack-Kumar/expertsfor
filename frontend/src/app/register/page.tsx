@@ -162,7 +162,7 @@ export default function RegisterPage() {
 
           {/* Terms Agreement Note */}
           <p className="text-[11px] text-[#736E65] leading-relaxed pt-1">
-            By creating an account, you agree to Grid07&apos;s{' '}
+            By creating an account, you agree to ExpertsFor&apos;s{' '}
             <span className="text-[#A8A398] underline cursor-pointer">Terms of Service</span> and{' '}
             <span className="text-[#A8A398] underline cursor-pointer">Privacy Policy</span>.
           </p>
@@ -180,7 +180,7 @@ export default function RegisterPage() {
               </>
             ) : (
               <>
-                <span>Create Grid07 Account</span>
+                <span>Create ExpertsFor Account</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}

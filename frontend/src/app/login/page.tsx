@@ -59,9 +59,9 @@ export default function LoginPage() {
 
       // Optionally record remember me preference in localStorage
       if (rememberMe) {
-        localStorage.setItem('grid07_remember_user', email.trim())
+        localStorage.setItem('expertsfor_remember_user', email.trim())
       } else {
-        localStorage.removeItem('grid07_remember_user')
+        localStorage.removeItem('expertsfor_remember_user')
       }
 
       const userRes = await api.get('/auth/me')
@@ -131,7 +131,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
-              placeholder="you@grid07.ai"
+              placeholder="you@expertsfor.me"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0F1015] border border-white/10 text-sm text-[#F2EFE8] placeholder-[#635D52] focus:outline-none focus:border-[#C7A66A] focus:ring-2 focus:ring-[#C7A66A]/20 transition-all"
@@ -213,7 +213,7 @@ export default function LoginPage() {
             </>
           ) : (
             <>
-              <span>Sign In to Grid07</span>
+              <span>Sign In to ExpertsFor</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}

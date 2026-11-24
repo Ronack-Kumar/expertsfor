@@ -39,33 +39,33 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
 
   const [globalTheme, setGlobalTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('grid07_theme') as 'light' | 'dark') || 'light'
+      return (localStorage.getItem('expertsfor_theme') as 'light' | 'dark') || 'light'
     }
     return 'light'
   })
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const t = (localStorage.getItem('grid07_theme') as 'light' | 'dark') || 'light'
+      const t = (localStorage.getItem('expertsfor_theme') as 'light' | 'dark') || 'light'
       document.documentElement.setAttribute('data-theme', t)
     }
     const handleThemeChange = () => {
       if (typeof window !== 'undefined') {
-        const t = (localStorage.getItem('grid07_theme') as 'light' | 'dark') || 'light'
+        const t = (localStorage.getItem('expertsfor_theme') as 'light' | 'dark') || 'light'
         setGlobalTheme(t)
       }
     }
-    window.addEventListener('grid07_theme_change', handleThemeChange)
-    return () => window.removeEventListener('grid07_theme_change', handleThemeChange)
+    window.addEventListener('expertsfor_theme_change', handleThemeChange)
+    return () => window.removeEventListener('expertsfor_theme_change', handleThemeChange)
   }, [])
 
   const toggleGlobalTheme = () => {
     const next = globalTheme === 'light' ? 'dark' : 'light'
     setGlobalTheme(next)
     if (typeof window !== 'undefined') {
-      localStorage.setItem('grid07_theme', next)
+      localStorage.setItem('expertsfor_theme', next)
       document.documentElement.setAttribute('data-theme', next)
-      window.dispatchEvent(new Event('grid07_theme_change'))
+      window.dispatchEvent(new Event('expertsfor_theme_change'))
     }
   }
 
@@ -153,10 +153,10 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
       }
     }
     void fetchConversations()
-    window.addEventListener('grid07_conversations_updated', fetchConversations)
+    window.addEventListener('expertsfor_conversations_updated', fetchConversations)
     return () => {
       isCancelled = true
-      window.removeEventListener('grid07_conversations_updated', fetchConversations)
+      window.removeEventListener('expertsfor_conversations_updated', fetchConversations)
     }
   }, [workspace?.id])
 
@@ -208,7 +208,7 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight text-white leading-none">Grid07</span>
+                <span className="font-bold text-base tracking-tight text-white leading-none">ExpertsFor</span>
                 <span className="text-[9px] font-semibold text-[#8C887E] tracking-wider uppercase mt-1">
                   Multi Expert AI Workspace
                 </span>
@@ -402,7 +402,7 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
             <div className="w-6 h-6 flex items-center justify-center text-[#B89355] dark:text-[#C7A66A]">
               <Sparkles className="w-5 h-5" />
             </div>
-            <span className="font-bold text-sm tracking-tight text-[#1A1A1E] dark:text-[#F2EFE8]">Grid07</span>
+            <span className="font-bold text-sm tracking-tight text-[#1A1A1E] dark:text-[#F2EFE8]">ExpertsFor</span>
           </div>
           <div className="flex items-center gap-2 text-xs">
             <Link href="/chat" className="px-2.5 py-1 rounded-md bg-[#1A1A1E] dark:bg-[#C7A66A] text-white dark:text-[#171715] font-semibold">

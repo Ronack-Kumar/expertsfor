@@ -217,7 +217,7 @@ export function ConnectedAgentNetwork() {
         </svg>
 
         {/* =========================================================================
-            CENTRAL ORCHESTRATION NODE (Grid07 Core)
+            CENTRAL ORCHESTRATION NODE (ExpertsFor Core)
             ========================================================================= */}
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center cursor-default"
@@ -246,7 +246,7 @@ export function ConnectedAgentNetwork() {
           <div className="mt-3 text-center">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1A1A22] border border-white/10 text-[10px] font-semibold text-[#F2EFE8] tracking-wider uppercase">
               <Layers className="w-2.5 h-2.5 text-[#C7A66A]" />
-              Grid07 Core
+              ExpertsFor Core
             </div>
             <div className="text-[11px] font-medium text-[#C2BEB4] mt-1 flex items-center justify-center gap-1">
               <span>Task Dispatch</span>

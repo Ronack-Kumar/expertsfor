@@ -141,7 +141,7 @@ def build_routing_text(agent: Agent) -> str:
 
 async def ensure_workspace_default_personas(workspace_id: uuid.UUID, db: AsyncSession) -> List[Agent]:
     """
-    Idempotently provision the 5 standard Grid07 default personas in a workspace.
+    Idempotently provision the 5 standard ExpertsFor default personas in a workspace.
     - Prevents duplicates on repeated execution.
     - Consolidates any legacy duplicate personas with the same name.
     - Preserves existing custom personas and customized configurations.

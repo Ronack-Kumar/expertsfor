@@ -12,7 +12,7 @@ from sqlalchemy import select
 
 async def run_live_e2e():
     print("================================================================")
-    print("      GRID07 AUTOMATIC EXPERT CHAT & FREE MODEL LIVE E2E       ")
+    print("      ExpertsFor AUTOMATIC EXPERT CHAT & FREE MODEL LIVE E2E       ")
     print("================================================================")
 
     embedding_service = EmbeddingService()
