@@ -30,6 +30,7 @@ async def send_email(to: str, subject: str, html_body: str, text_body: str) -> b
         if r.status_code >= 300:
             log.error("Brevo rejected email (%s): %s", r.status_code, r.text[:300])
             return False
+        log.warning("Brevo accepted email '%s' (message id %s)", subject, r.json().get("messageId", "?"))
         return True
     except httpx.HTTPError as exc:
         log.error("Email send failed: %s", exc)
